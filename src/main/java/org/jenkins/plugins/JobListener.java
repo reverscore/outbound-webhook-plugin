@@ -18,7 +18,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 
     private static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
-    
+
     private static final Logger log = LoggerFactory.getLogger(JobListener.class);
 
     public JobListener() {
@@ -35,9 +35,10 @@ public class JobListener extends RunListener<AbstractBuild> {
         String webHookUrl = publisher.webHookUrl;
         String buildUrl = build.getAbsoluteUrl();
         String projectName = build.getProject().getDisplayName();
-        String buildName = build.getDisplayName();
+        String buildName = build.getFullDisplayName();
+        String externalizableId = build.getExternalizableId();
         String buildVars = build.getBuildVariables().toString();
-        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, buildVars, "start");
+        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, externalizableId, buildVars, "start");
         httpPost(webHookUrl, event);
     }
 
@@ -54,9 +55,10 @@ public class JobListener extends RunListener<AbstractBuild> {
         String webHookUrl = publisher.webHookUrl;
         String buildUrl = build.getAbsoluteUrl();
         String projectName = build.getProject().getDisplayName();
-        String buildName = build.getDisplayName();
+        String buildName = build.getFullDisplayName();
+        String externalizableId = build.getExternalizableId();
         String buildVars = build.getBuildVariables().toString();
-        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, buildVars, "");
+        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, externalizableId, buildVars, "");
         if (publisher.onSuccess && result.equals(Result.SUCCESS)) {
             event.event = "success";
             httpPost(webHookUrl, event);

@@ -1,7 +1,7 @@
 package org.jenkins.plugins;
 
 public class NotificationEvent {
-    public NotificationEvent(String projectName, String buildName, String buildUrl, String buildVars, String event) {
+    public NotificationEvent(String projectName, String buildName, String buildUrl, String externalizableId, String buildVars, String event) {
         this.projectName = projectName;
         this.buildName = buildName;
         this.buildUrl = buildUrl;
@@ -12,6 +12,7 @@ public class NotificationEvent {
     public String projectName;
     public String buildName;
     public String buildUrl;
+    public String externalizableId;
     public String buildVars;
     public String event;
 }
