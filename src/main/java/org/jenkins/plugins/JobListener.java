@@ -28,6 +28,7 @@ public class JobListener extends RunListener<AbstractBuild> {
 
     @Override
     public void onStarted(AbstractBuild build, TaskListener listener) {
+        // Promotion is not working upstreamBuilds and rootBuilds are not working
         WebHookPublisher publisher = GetWebHookPublisher(build);
         if (publisher == null || !publisher.onStart) {
             return;
@@ -36,9 +37,19 @@ public class JobListener extends RunListener<AbstractBuild> {
         String buildUrl = build.getAbsoluteUrl();
         String projectName = build.getProject().getDisplayName();
         String buildName = build.getFullDisplayName();
-        String externalizableId = build.getExternalizableId();
+        int buildNumber = build.number;
         String buildVars = build.getBuildVariables().toString();
-        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, externalizableId, buildVars, "start");
+        String upstreamBuilds = build.getUpstreamBuilds().toString();
+
+        int rootBuildNumber = build.getRootBuild().getNumber();
+        String rootBuildName = build.getRootBuild().getFullDisplayName();
+
+        long timestamp = build.getTimeInMillis();
+        long duration = build.getDuration();
+        int previousSuccessfulBuild = build.getPreviousSuccessfulBuild().getNumber();
+
+        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, buildNumber, buildVars,
+                upstreamBuilds, rootBuildName, rootBuildNumber, previousSuccessfulBuild, timestamp, duration, "start");
         httpPost(webHookUrl, event);
     }
 
@@ -56,9 +67,17 @@ public class JobListener extends RunListener<AbstractBuild> {
         String buildUrl = build.getAbsoluteUrl();
         String projectName = build.getProject().getDisplayName();
         String buildName = build.getFullDisplayName();
-        String externalizableId = build.getExternalizableId();
+        int buildNumber = build.number;
         String buildVars = build.getBuildVariables().toString();
-        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, externalizableId, buildVars, "");
+        String upstreamBuilds = build.getUpstreamBuilds().toString();
+        int rootBuildNumber = build.getRootBuild().getNumber();
+        String rootBuildName = build.getRootBuild().getFullDisplayName();
+        long timestamp = build.getTimeInMillis();
+        long duration = build.getDuration();
+        int previousSuccessfulBuild = build.getPreviousSuccessfulBuild().getNumber();
+
+        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, buildNumber, buildVars,
+                upstreamBuilds, rootBuildName, rootBuildNumber, previousSuccessfulBuild, timestamp, duration, "");
         if (publisher.onSuccess && result.equals(Result.SUCCESS)) {
             event.event = "success";
             httpPost(webHookUrl, event);
@@ -90,7 +109,7 @@ public class JobListener extends RunListener<AbstractBuild> {
             Response response = client.newCall(request).execute();
             log.debug("Invocation of webhook {} successful", url);
         } catch (Exception e) {
-        	log.info("Invocation of webhook {} failed", url, e);
+            log.info("Invocation of webhook {} failed", url, e);
         }
     }
 }
