@@ -35,21 +35,20 @@ public class JobListener extends RunListener<AbstractBuild> {
         }
         String webHookUrl = publisher.webHookUrl;
         String buildUrl = build.getAbsoluteUrl();
-        String projectName = build.getProject().getDisplayName();
-        String buildName = build.getFullDisplayName();
+        String buildName = build.getProject().getDisplayName();
         int buildNumber = build.number;
         String buildVars = build.getBuildVariables().toString();
         String upstreamBuilds = build.getUpstreamBuilds().toString();
 
         int rootBuildNumber = build.getRootBuild().getNumber();
-        String rootBuildName = build.getRootBuild().getFullDisplayName();
+        String rootBuildName = build.getRootBuild().getProject().getName();
 
         long timestamp = build.getTimeInMillis();
         long duration = build.getDuration();
         int previousSuccessfulBuild = build.getPreviousSuccessfulBuild().getNumber();
 
-        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, buildNumber, buildVars,
-                upstreamBuilds, rootBuildName, rootBuildNumber, previousSuccessfulBuild, timestamp, duration, "start");
+        NotificationEvent event = new NotificationEvent(buildName, buildUrl, buildNumber, buildVars, upstreamBuilds,
+                rootBuildName, rootBuildNumber, previousSuccessfulBuild, timestamp, duration, "start");
         httpPost(webHookUrl, event);
     }
 
@@ -65,19 +64,18 @@ public class JobListener extends RunListener<AbstractBuild> {
         }
         String webHookUrl = publisher.webHookUrl;
         String buildUrl = build.getAbsoluteUrl();
-        String projectName = build.getProject().getDisplayName();
-        String buildName = build.getFullDisplayName();
+        String buildName = build.getProject().getDisplayName();
         int buildNumber = build.number;
         String buildVars = build.getBuildVariables().toString();
         String upstreamBuilds = build.getUpstreamBuilds().toString();
         int rootBuildNumber = build.getRootBuild().getNumber();
-        String rootBuildName = build.getRootBuild().getFullDisplayName();
+        String rootBuildName = build.getRootBuild().getProject().getName();
         long timestamp = build.getTimeInMillis();
         long duration = build.getDuration();
         int previousSuccessfulBuild = build.getPreviousSuccessfulBuild().getNumber();
 
-        NotificationEvent event = new NotificationEvent(projectName, buildName, buildUrl, buildNumber, buildVars,
-                upstreamBuilds, rootBuildName, rootBuildNumber, previousSuccessfulBuild, timestamp, duration, "");
+        NotificationEvent event = new NotificationEvent(buildName, buildUrl, buildNumber, buildVars, upstreamBuilds,
+                rootBuildName, rootBuildNumber, previousSuccessfulBuild, timestamp, duration, "");
         if (publisher.onSuccess && result.equals(Result.SUCCESS)) {
             event.event = "success";
             httpPost(webHookUrl, event);
