@@ -32,4 +32,5 @@ repositories {
 dependencies {
     compile 'com.alibaba:fastjson:1.2.71'
     compile 'com.squareup.okhttp3:okhttp:4.7.2'
+    compile 'org.jenkins-ci.plugins:promoted-builds:3.7'
 }
