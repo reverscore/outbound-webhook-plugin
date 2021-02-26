@@ -40,11 +40,10 @@ public class JobListener extends RunListener<AbstractBuild> {
         String upstreamBuildName = null;
         int upstreamBuildNumber = 0;
 
-        if (Jenkins.get().getPlugin("promoted-builds") != null) {
-            if (upCause != null) {
-                upstreamBuildName = upCause.getUpstreamProject();
-                upstreamBuildNumber = upCause.getUpstreamBuild();
-            }
+        if (Jenkins.get().getPlugin("promoted-builds") != null && upCause != null) {
+            log.info("Promoted builds is installed, sending upstream build on webhook");
+            upstreamBuildName = upCause.getUpstreamProject();
+            upstreamBuildNumber = upCause.getUpstreamBuild();
         }
 
         String webHookUrl = publisher.webHookUrl;
@@ -82,11 +81,10 @@ public class JobListener extends RunListener<AbstractBuild> {
         String upstreamBuildName = null;
         int upstreamBuildNumber = 0;
 
-        if (Jenkins.get().getPlugin("promoted-builds") != null) {
-            if (upCause != null) {
-                upstreamBuildName = upCause.getUpstreamProject();
-                upstreamBuildNumber = upCause.getUpstreamBuild();
-            }
+        if (Jenkins.get().getPlugin("promoted-builds") != null && upCause != null) {
+            log.info("Promoted builds is installed, sending upstream build on webhook");
+            upstreamBuildName = upCause.getUpstreamProject();
+            upstreamBuildNumber = upCause.getUpstreamBuild();
         }
 
         long timestamp = build.getTimeInMillis();
